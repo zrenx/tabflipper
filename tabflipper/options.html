@@ -1,0 +1,198 @@
+<html>
+<head>
+<title> Screen Capture Options </title>
+<meta charset="utf-8">
+<style>
+body {
+    font-family: arial, sans-serif;
+    margin:10px;
+    background: #EBEFF9;
+    font-size: 13px;
+}
+#header {
+    padding-bottom:1em;
+    padding-top:1em;
+}
+#header h1 {
+    display: inline;
+    background: url(active.png) no-repeat;
+    background-position: 10px 30px;
+    padding-top: 40px;
+    padding-left: 80px;
+    padding-bottom: 40px;
+}
+#content {
+    background: #fff;
+    border:2px solid #bbb;
+    border-bottom-left-radius: 10px 10px;
+    border-bottom-right-radius: 10px 10px;
+    border-top-left-radius: 10px 10px;
+    border-top-right-radius: 10px 10px;
+    padding: 20px;
+    text-align: left;
+    margin:50px auto 20px auto;
+    width: 600px;
+    height: auto;
+}
+
+#content h2 {
+    border-bottom: 1px dotted #bbb;
+}
+
+select, input[type=text] {
+    width: 100px;
+}
+
+#closeBtn {
+    margin-top: 20px;
+}
+#interval ul {
+    list-style: none;
+}
+p.inline {
+    display: inline;
+}
+.indent {
+    margin-left: 20px;
+}
+.gray {
+    color: gray;
+    font-size: 11px;
+}
+#footer {
+    text-align: center;
+    font-size: 13px;
+}
+
+</style>
+<script src="jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+function save_options() {
+    if ( !$('#enter').attr('checked')) {
+	var interval = $('select option:selected').val();
+    } else {
+	var interval = $('#interval_input').val()*1000;
+    }
+    localStorage["interval"] = interval;
+    localStorage['direction'] = $('input[name=direction]:checked').val();
+    localStorage['start_from_beginning'] = $('#start_from_beginning').is(':checked');
+
+    var status = $('#status');
+    status.html("Option Saved.");
+    setTimeout(function() {
+	    status.html("");
+	    chrome.tabs.getSelected(null, function(tab) {
+		chrome.tabs.remove(tab.id);
+	    });
+	}, 500);
+}
+
+function restore_options() {
+    var interval = localStorage["interval"];
+    var direction = localStorage['direction'];
+    var startFromBeginning = localStorage['start_from_beginning'] == 'true';
+    if (!interval) {
+	return;
+    }
+    
+    var option = $('select option[value="'+interval+'"]');
+    if (option.length == 1) {
+	$('#enter').attr('checked',false);
+	option.attr("selected",true);
+	$('#interval_input').val(interval/1000);
+	$('#interval_input').css('display','none');
+	$('#interval_select').css('display','inline');
+    } else {
+	$('#enter').attr("checked",true);
+	$('#interval_input').val(interval/1000);
+	$('#interval_input').css('display','inline');
+	$('#interval_select').css('display','none');
+    }
+
+    if (direction) {
+	var dir_radio = $('input[name=direction][value="'+direction+'"]');
+	if (dir_radio.length == 1) {
+	    dir_radio.attr('checked', true);
+	} else {
+	    $('input[name=direction]:first').attr('checked', true);
+	}
+    } else {
+	$('input[name=direction]:first').attr('checked', true);
+    }
+
+    if (startFromBeginning) {
+	$('#start_from_beginning').attr('checked', true);
+    }
+    if (direction == 'random') {
+	$('#beginning').css('display', 'none');
+    }
+}
+
+function init() {
+    restore_options();
+
+    $('#enter').click(function() {
+	if (this.checked) {
+	    $('#interval_input').css('display','inline');
+	    $('#interval_select').css('display','none');
+	} else {
+	    $('#interval_input').css('display','none');
+	    $('#interval_select').css('display','inline');
+	}
+    });
+    $('input[name=direction]').click(function() {
+	if (this.value == 'random') {
+	    $('#beginning').css('display','none');
+	}
+	else {
+	    $('#beginning').css('display','block');
+	}
+
+    });
+}
+
+</script>
+<body onload="init()">
+<div id="content">
+  <div id="header">
+    <h1>Tab Flipper Options</h1>
+  </div>
+
+  <h2>Interval:</h2>
+  <div id="interval">
+    <select id="interval_select" legth="50">
+      <option value="1000">1</option>
+      <option value="2000">2</option>
+      <option value="5000">5</option>
+      <option value="10000">10</option>
+    </select>
+    <input type="text" id="interval_input"/> 
+    <p class="inline">seconds</p>
+
+    <input type="checkbox" id="enter"/>
+    <p class="inline gray">Manually enter</p>
+  </div>
+  
+    <br>
+  <h2>Direction:</h2>
+  <div id="order">
+    <input type="radio" name="direction" value="forward"/>Forward
+    <input type="radio" name="direction" value="backward"/>Backward
+    <input type="radio" name="direction" value="random"/>Random
+
+    <div id="beginning" class="indent">
+      <input type="checkbox" id="start_from_beginning"/>
+      <p class="inline gray">Start from beginning (start from first if forward, last if backward)</p>
+    </div>
+  </div>
+
+  <br>
+  <div id="status"></div>
+
+  <div id="closeBtn">
+    <button onclick="save_options()">Save & close</button>
+  </div>
+</div>
+<div id="footer">©2010 zrenx.com</div>
+</body>
+</html>
