@@ -1,4 +1,8 @@
 Tab Flipper
-==========
+===========
 
-Chrome Extension, automatically flipper the your tabs in the current window. You can choose how many seconds to flip, forward, backward or in random order.
+**Chrome Extension, let you automatically flipper the tabs in the current window.**
+
+You can choose how many seconds to flip, forward, backward or in random order.
+
+Get it here -- [tabflipper.crx](https://github.com/zrenx/tabflipper/raw/master/tabflipper.crx)
