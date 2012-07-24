@@ -69,9 +69,9 @@ p.inline {
 <script type="text/javascript">
 function save_options() {
     if ( !$('#enter').attr('checked')) {
-	var interval = $('select option:selected').val();
+        var interval = $('select option:selected').val();
     } else {
-	var interval = $('#interval_input').val()*1000;
+        var interval = $('#interval_input').val()*1000;
     }
     localStorage["interval"] = interval;
     localStorage['direction'] = $('input[name=direction]:checked').val();
@@ -80,51 +80,51 @@ function save_options() {
     var status = $('#status');
     status.html("Option Saved.");
     setTimeout(function() {
-	    status.html("");
-	    chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.remove(tab.id);
-	    });
-	}, 500);
+        status.html("");
+        chrome.tabs.getSelected(null, function(tab) {
+    	chrome.tabs.remove(tab.id);
+        });
+    }, 500);
 }
 
 function restore_options() {
-    var interval = localStorage["interval"];
-    var direction = localStorage['direction'];
+    var interval = localStorage['interval'] ? localStorage['interval'] : 1000;
+    var direction = localStorage['direction'] ? localStorage['direction'] : 'forward';
     var startFromBeginning = localStorage['start_from_beginning'] == 'true';
     if (!interval) {
-	return;
+        return;
     }
     
     var option = $('select option[value="'+interval+'"]');
     if (option.length == 1) {
-	$('#enter').attr('checked',false);
-	option.attr("selected",true);
-	$('#interval_input').val(interval/1000);
-	$('#interval_input').css('display','none');
-	$('#interval_select').css('display','inline');
+        $('#enter').attr('checked',false);
+        option.attr("selected",true);
+        $('#interval_input').val(interval/1000);
+        $('#interval_input').css('display','none');
+        $('#interval_select').css('display','inline');
     } else {
-	$('#enter').attr("checked",true);
-	$('#interval_input').val(interval/1000);
-	$('#interval_input').css('display','inline');
-	$('#interval_select').css('display','none');
+        $('#enter').attr("checked",true);
+        $('#interval_input').val(interval/1000);
+        $('#interval_input').css('display','inline');
+        $('#interval_select').css('display','none');
     }
 
     if (direction) {
-	var dir_radio = $('input[name=direction][value="'+direction+'"]');
-	if (dir_radio.length == 1) {
-	    dir_radio.attr('checked', true);
-	} else {
-	    $('input[name=direction]:first').attr('checked', true);
-	}
+        var dir_radio = $('input[name=direction][value="'+direction+'"]');  
+        if (dir_radio.length == 1) {
+            dir_radio.attr('checked', true);
+        } else {
+            $('input[name=direction]:first').attr('checked', true);
+        }
     } else {
-	$('input[name=direction]:first').attr('checked', true);
+        $('input[name=direction]:first').attr('checked', true);
     }
 
     if (startFromBeginning) {
-	$('#start_from_beginning').attr('checked', true);
+        $('#start_from_beginning').attr('checked', true);
     }
     if (direction == 'random') {
-	$('#beginning').css('display', 'none');
+        $('#beginning').css('display', 'none');
     }
 }
 
@@ -132,21 +132,21 @@ function init() {
     restore_options();
 
     $('#enter').click(function() {
-	if (this.checked) {
-	    $('#interval_input').css('display','inline');
-	    $('#interval_select').css('display','none');
-	} else {
-	    $('#interval_input').css('display','none');
-	    $('#interval_select').css('display','inline');
-	}
+    	if (this.checked) {
+	        $('#interval_input').css('display','inline');
+	        $('#interval_select').css('display','none');
+    	} else {
+	        $('#interval_input').css('display','none');
+	        $('#interval_select').css('display','inline');
+    	}
     });
     $('input[name=direction]').click(function() {
-	if (this.value == 'random') {
-	    $('#beginning').css('display','none');
-	}
-	else {
-	    $('#beginning').css('display','block');
-	}
+	    if (this.value == 'random') {
+	        $('#beginning').css('display','none');
+	    }
+        else {
+            $('#beginning').css('display','block');
+        }
 
     });
 }

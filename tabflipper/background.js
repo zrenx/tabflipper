@@ -1,9 +1,3 @@
-interval = 1000;
-direction = 'forward';
-startFromBeginning = false;
-
-tabIndex = 0;
-currentWindowId = 0;
 running = false;
 
 function doSwitch(fromBeginning) {
@@ -24,7 +18,6 @@ function switchTabs(tabs, fromBeginning) {
 	}
     }
 
-    alert('tabIndex: '+tabIndex);
     myInterval = setInterval(function() {
 	chrome.pageAction.setIcon({tabId: tabs[tabIndex].id, path: "active.png"});
 	showTab(tabIndex);
@@ -63,10 +56,10 @@ function showTab() {
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     // load settings
-    interval = localStorage["interval"];
-    direction = localStorage["direction"];
+    interval = localStorage['interval'] ? localStorage['interval'] : 1000;
+    direction = localStorage['direction'] ? localStorage['direction'] : 'forward';
     startFromBeginning = localStorage['start_from_beginning'] == 'true';
-    console.log("interval:"+interval+"\ndirection:"+direction+"\nstartFromBeginning:"+startFromBeginning);
+    //console.log("interval:"+interval+"\ndirection:"+direction+"\nstartFromBeginning:"+startFromBeginning);
 
     // create a new tab
     //var viewTabUrl = chrome.extension.getURL("test.html");

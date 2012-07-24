@@ -1,6 +1,6 @@
 {
     "name": "Tab Flipper ",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Flipping the tabs for you. Interval and directions are optional.",
     "icons": {
 	"48":"active.png"
